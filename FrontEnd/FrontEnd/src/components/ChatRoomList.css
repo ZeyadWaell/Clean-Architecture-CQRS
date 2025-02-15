@@ -1,10 +1,52 @@
 .room-list-container {
+    height: 100%;
     display: flex;
     flex-direction: column;
+  }
+  
+  .card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.75rem 1rem;
+  }
+  
+  .card-body {
+    padding: 0;
     overflow-y: auto;
   }
   
-  .room-list-container .list-group-item:hover {
+  .list-group {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .list-group-item:hover {
     background-color: #f0f0f0;
+  }
+  
+  .room-name {
+    font-weight: 600;
+  }
+  
+  .join-text {
+    color: #777;
+    font-size: 0.9rem;
+  }
+  
+  .empty-list {
+    padding: 1rem;
+    text-align: center;
+    color: #777;
   }
   

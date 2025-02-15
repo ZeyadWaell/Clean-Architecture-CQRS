@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import API from '../api/API'
 import ChatRoomList from '../components/ChatRoomList'
 import MessageList from '../components/MessageList'
+import { useNavigate } from 'react-router-dom'
+import './ChatPage.css'
 
 function ChatPage() {
   const [rooms, setRooms] = useState([])
@@ -13,13 +15,14 @@ function ChatPage() {
   const [hubConnected, setHubConnected] = useState(false)
   const hubConnectionRef = useRef(null)
   const currentUserName = localStorage.getItem('username') || 'Me'
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
         const { data } = await API.get('/chatRooms/getall')
         setRooms(data.data || [])
-      } catch {}
+      } catch (error) {}
     }
     fetchRooms()
   }, [])
@@ -28,7 +31,7 @@ function ChatPage() {
     try {
       const { data } = await API.get(`/chat/messages/${roomId}`)
       setMessages(data.data || [])
-    } catch {}
+    } catch (error) {}
   }
 
   const joinRoom = async (room) => {
@@ -41,6 +44,7 @@ function ChatPage() {
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
         .build()
+
       connection.on('ReceiveMessage', (msg) => {
         setMessages((prev) => [...prev, msg])
       })
@@ -50,32 +54,49 @@ function ChatPage() {
         )
       })
       connection.on('MessageDeleted', (delId) => {
-        setMessages((prev) =>
-          prev.filter((m) => m.messageId !== delId)
-        )
+        setMessages((prev) => prev.filter((m) => m.messageId !== delId))
       })
+      connection.on('UserJoined', (userId) => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            messageId: `sys-${Date.now()}`,
+            sender: 'System',
+            message: `${userId} has joined the chat`
+          }
+        ])
+      })
+      connection.on('UserLeft', (userId) => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            messageId: `sys-${Date.now()}`,
+            sender: 'System',
+            message: `${userId} left the chat`
+          }
+        ])
+      })
+
       await connection.start()
       await connection.invoke('JoinRoom', room.id)
       hubConnectionRef.current = connection
       setHubConnected(true)
       fetchMessages(room.id)
-    } catch {}
+    } catch (error) {}
   }
 
   const leaveRoom = async () => {
     if (!currentRoom) return
     try {
-      await API.delete('/chatRooms/leave', {
-        data: { chatRoomId: currentRoom.id },
-      })
-      if (hubConnectionRef.current) {
+
         await hubConnectionRef.current.invoke('LeaveRoom', currentRoom.id)
         await hubConnectionRef.current.stop()
-      }
+      
       setCurrentRoom(null)
       setMessages([])
       setHubConnected(false)
-    } catch {}
+      navigate('/chat')
+    } catch (error) {}
   }
 
   const handleSendMessage = async () => {
@@ -83,10 +104,10 @@ function ChatPage() {
     try {
       await hubConnectionRef.current.invoke('SendMessage', {
         chatRoomId: currentRoom.id,
-        message: messageText,
+        message: messageText
       })
       setMessageText('')
-    } catch {}
+    } catch (error) {}
   }
 
   const handleEditMessage = async (id) => {
@@ -95,11 +116,11 @@ function ChatPage() {
       await hubConnectionRef.current.invoke('EditMessage', {
         messageId: id,
         chatRoomId: currentRoom.id,
-        newContent: editText,
+        newContent: editText
       })
       setEditingMessageId(null)
       setEditText('')
-    } catch {}
+    } catch (error) {}
   }
 
   const handleDeleteMessage = async (id) => {
@@ -107,65 +128,54 @@ function ChatPage() {
     try {
       await hubConnectionRef.current.invoke('DeleteMessage', {
         messageId: id,
-        chatRoomId: currentRoom.id,
+        chatRoomId: currentRoom.id
       })
-    } catch {}
+    } catch (error) {}
   }
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column">
-      <div className="row bg-dark text-white align-items-center p-2">
-        <div className="col">
-          <h5 className="mb-0">My Chat App</h5>
-        </div>
-        <div className="col-auto">
-          {currentRoom && (
-            <button className="btn btn-outline-light btn-sm" onClick={leaveRoom}>
-              Leave {currentRoom.name}
-            </button>
-          )}
-        </div>
+    <div className="chat-page">
+      <div className="header">
+        <h5>My Chat App</h5>
+        {currentRoom && (
+          <button className="leave-btn" onClick={leaveRoom}>
+            Leave {currentRoom.name}
+          </button>
+        )}
       </div>
-      <div className="row flex-grow-1">
-        <div className="col-3 bg-light p-0 border-end">
+      <div className="main-content">
+        <div className="room-list">
           <ChatRoomList rooms={rooms} onJoin={joinRoom} />
         </div>
-        <div className="col-9 d-flex flex-column p-0">
+        <div className="chat-container">
           {currentRoom ? (
             <>
-              <div className="flex-grow-1" style={{ overflowY: 'auto' }}>
-                <MessageList
-                  messages={messages}
-                  currentUserName={currentUserName}
-                  editingMessageId={editingMessageId}
-                  editText={editText}
-                  setEditText={setEditText}
-                  onEditInit={setEditingMessageId}
-                  onEditSave={handleEditMessage}
-                  onDelete={handleDeleteMessage}
+              <MessageList
+                messages={messages}
+                currentUserName={currentUserName}
+                editingMessageId={editingMessageId}
+                editText={editText}
+                setEditText={setEditText}
+                onEditInit={setEditingMessageId}
+                onEditSave={handleEditMessage}
+                onDelete={handleDeleteMessage}
+              />
+              <div className="message-input">
+                <input
+                  type="text"
+                  placeholder="Type a message..."
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') handleSendMessage()
+                  }}
                 />
-              </div>
-              <div className="p-2 border-top">
-                <div className="input-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="Type a message..."
-                    value={messageText}
-                    onChange={(e) => setMessageText(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') handleSendMessage()
-                    }}
-                  />
-                  <button className="btn btn-primary" onClick={handleSendMessage}>
-                    Send
-                  </button>
-                </div>
+                <button onClick={handleSendMessage}>Send</button>
               </div>
             </>
           ) : (
-            <div className="d-flex align-items-center justify-content-center h-100">
-              <h5 className="text-muted">Select a room to start chatting.</h5>
+            <div className="no-room">
+              <h5>Select a room to start chatting.</h5>
             </div>
           )}
         </div>

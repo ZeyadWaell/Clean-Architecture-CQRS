@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ChatApp.Api.Hubs
@@ -65,30 +66,34 @@ namespace ChatApp.Api.Hubs
 
         public async Task JoinRoom(string chatRoomId)
         {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous";
             try
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, chatRoomId);
-                await Clients.Group(chatRoomId)
-                    .SendAsync("UserJoined", Context.User?.Identity?.Name ?? "Anonymous");
+                await Clients.Group(chatRoomId).SendAsync("UserJoined", userId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error joining room for ChatRoomId: {ChatRoomId}", chatRoomId);
             }
         }
+
         public async Task LeaveRoom(string chatRoomId)
         {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous";
             try
             {
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatRoomId);
-                await Clients.Group(chatRoomId)
-                    .SendAsync("UserLeft", Context.User?.Identity?.Name ?? "Anonymous");
+                await Groups.AddToGroupAsync(Context.ConnectionId, chatRoomId);
+                await Clients.Group(chatRoomId).SendAsync("UserLeft", userId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error leaving room for ChatRoomId: {ChatRoomId}", chatRoomId);
+                _logger.LogError(ex, "Error joining room for ChatRoomId: {ChatRoomId}", chatRoomId);
             }
         }
+
+
+
 
 
         #region Private helper
