@@ -1,17 +1,10 @@
-/* src/components/ChatRoomList.css */
-
 .room-list-container {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
   }
   
-  .room-item {
-    cursor: pointer;
-  }
-  
-  /* Hover effect for list items */
-  .room-item:hover {
+  .room-list-container .list-group-item:hover {
     background-color: #f0f0f0;
   }
   
