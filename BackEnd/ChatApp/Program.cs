@@ -14,7 +14,7 @@ namespace ChatApp
             var configuration = builder.Configuration;
 
             builder.Services.AddApplicationServices()
-                .AddApiServices()
+                .AddApiServices(configuration)
                 .AddInfrastructureServices(configuration);
 
             var corsPolicy = "AllowFrontend";
@@ -43,9 +43,10 @@ namespace ChatApp
             }
 
             app.UseHttpsRedirection();
-            app.UseCors(corsPolicy);
 
             app.UseRouting();
+            app.UseCors(corsPolicy);
+
             app.UseAuthentication();  
             app.UseAuthorization();   
 

@@ -9,7 +9,10 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -19,11 +22,12 @@ const LoginPage = () => {
 
       if (data.success && data.data?.token) {
         localStorage.setItem('token', data.data.token);
-        navigate('/chat');
+        navigate('/chat'); // Go to the chat page
       } else {
-        setError(data.message || 'Login failed.');
+        setError(data.message || 'Login failed. Please try again.');
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('Login failed. Please check your credentials.');
     }
   };
@@ -58,10 +62,12 @@ const LoginPage = () => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Login</button>
+          <button type="submit" className="btn btn-primary w-100">
+            Login
+          </button>
         </form>
         <p className="mt-3 text-center">
-          Don't have an account?{" "}
+          Don't have an account?{' '}
           <Link to="/register" className="text-primary">
             Register here
           </Link>

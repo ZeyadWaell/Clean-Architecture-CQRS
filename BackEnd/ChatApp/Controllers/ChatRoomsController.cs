@@ -4,6 +4,7 @@ using ChatApp.Application.CQRS.ChatRoom.Queries.Models;
 using ChatApp.Core.Entities;
 using ChatApp.Routes;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace ChatApp.Api.Controllers
 {
     [Route(ChatRoomsRoutes.Controller)]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatRoomsController : ControllerBase
     {
 

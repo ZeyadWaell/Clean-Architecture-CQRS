@@ -11,7 +11,6 @@ namespace ChatApp.Application.CQRS.ChatMessage.Commands.Models
 {
     public class SendMessageRequest : IRequest<ApiResponse<ChatMessageResponse>>
     {
-        public string UserName { get; set; }
         public Guid ChatRoomId { get; set; }
         public string Message { get; set; }
     }

@@ -2,6 +2,7 @@
 using ChatApp.Application.CQRS.ChatMessage.Queries.Response;
 using ChatApp.Application.CQRS.Requests.Chat.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Api.Hubs
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub
     {
         private readonly IMediator _mediator;
@@ -21,9 +23,10 @@ namespace ChatApp.Api.Hubs
         }
         public Task SendMessage(SendMessageRequest command)
         {
+            var userName = Context.UserIdentifier;
             var broadcastMessage = new ChatMessageResponse
             {
-                Sender = command.UserName,
+                Sender = userName,
                 Message = command.Message,
                 Timestamp = DateTime.UtcNow,
                 MessageId = Guid.NewGuid()

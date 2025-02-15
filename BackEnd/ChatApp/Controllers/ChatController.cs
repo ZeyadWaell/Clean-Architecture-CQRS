@@ -4,6 +4,7 @@ using ChatApp.Application.CQRS.ChatMessage.Queries.Models;
 using ChatApp.Application.CQRS.Requests.Chat.Models;
 using ChatApp.Routes;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace ChatApp.Api.Controllers
 
     [Route(ChatRoutes.Controller)]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,7 +26,7 @@ namespace ChatApp.Api.Controllers
             _mediator = mediator;
             this.hubContext = hubContext;
         }
-
+        // For testing purposes
         //[HttpPost(ChatRoutes.SendMessage)]
         //public async Task<IActionResult> SendMessage([FromBody] SendMessageRequest command)
         //{

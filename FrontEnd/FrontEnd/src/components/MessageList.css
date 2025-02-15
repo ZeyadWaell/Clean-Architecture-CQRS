@@ -1,0 +1,83 @@
+/* src/components/MessageList.css */
+
+/* Container styling */
+.message-list-container {
+    height: 100%;
+  }
+  
+  .messages-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #f7f7f7;
+    padding: 1rem;
+  }
+  
+  /* Bubble Container */
+  .message-bubble {
+    max-width: 70%;
+    margin-bottom: 1rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 1rem;
+    position: relative;
+    clear: both;
+  }
+  
+  /* Bubbles from the current user */
+  .message-bubble.mine {
+    float: right;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    text-align: left;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 0;
+  }
+  
+  /* Bubbles from others */
+  .message-bubble.theirs {
+    float: left;
+    background-color: #e5e5ea;
+    color: #333;
+    border-top-left-radius: 0.3rem;
+    border-bottom-left-radius: 0;
+  }
+  
+  /* Sender name above the bubble */
+  .sender-name {
+    font-size: 0.8rem;
+  }
+  
+  /* The message text inside the bubble */
+  .message-text {
+    white-space: pre-wrap; /* allows multiline text */
+  }
+  
+  /* Edit container for input + buttons */
+  .edit-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* The margin inside the bubble might push content down too far if the bubble is aligned left or right */
+  .message-bubble.mine .edit-container .form-control {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  /* Actions (edit/delete) inside the bubble, aligned to the right for mine */
+  .message-actions {
+    font-size: 0.9rem;
+  }
+  
+  /* Scrollbar styling if you want it fancy:
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+  */
+  

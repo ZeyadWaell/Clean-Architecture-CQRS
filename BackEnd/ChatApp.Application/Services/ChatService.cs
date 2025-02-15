@@ -48,7 +48,7 @@ namespace ChatApp.Application.Services
             {
                 MessageId = message.Id,
                 Message = message.Message,
-                Sender = request.UserName,
+                Sender = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name),
                 Timestamp = message.Timestamp
             }, "Message sent successfully.");
         }

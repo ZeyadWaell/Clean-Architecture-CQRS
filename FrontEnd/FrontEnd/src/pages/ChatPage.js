@@ -9,18 +9,18 @@ const ChatPage = () => {
   const [rooms, setRooms] = useState([]);
   const [currentRoom, setCurrentRoom] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [joinUser, setJoinUser] = useState('');
   const [messageText, setMessageText] = useState('');
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editText, setEditText] = useState('');
   const [hubConnected, setHubConnected] = useState(false);
   const hubConnectionRef = useRef(null);
 
+  // 1. Load rooms
   useEffect(() => {
     const fetchRooms = async () => {
       try {
         const { data } = await API.get('/chatRooms/getall');
-        setRooms(data.data);
+        setRooms(data.data || []);
       } catch (error) {
         console.error('Error fetching rooms:', error);
       }
@@ -28,6 +28,7 @@ const ChatPage = () => {
     fetchRooms();
   }, []);
 
+  // 2. Load messages
   const fetchMessages = async (roomId) => {
     try {
       const { data } = await API.get(`/chat/messages/${roomId}`);
@@ -37,12 +38,16 @@ const ChatPage = () => {
     }
   };
 
+  // 3. Join room
   const joinRoom = async (room) => {
     try {
       setCurrentRoom(room);
       const token = localStorage.getItem('token');
+
       const connection = new HubConnectionBuilder()
-        .withUrl('https://localhost:44307/chathub', { accessTokenFactory: () => token })
+        .withUrl('https://localhost:44307/chathub', {
+          accessTokenFactory: () => token,
+        })
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
         .build();
@@ -52,35 +57,35 @@ const ChatPage = () => {
       });
       connection.on('MessageEdited', (editedMessage) => {
         setMessages((prev) =>
-          prev.map((msg) => (msg.MessageId === editedMessage.MessageId ? editedMessage : msg))
+          prev.map((msg) =>
+            msg.messageId === editedMessage.messageId ? editedMessage : msg
+          )
         );
       });
       connection.on('MessageDeleted', (deletedMessageId) => {
-        setMessages((prev) => prev.filter((msg) => msg.MessageId !== deletedMessageId));
-      });
-      connection.on('UserJoined', (user) => {
-        console.log(`${user} joined the room.`);
-      });
-      connection.on('UserLeft', (user) => {
-        console.log(`${user} left the room.`);
+        setMessages((prev) =>
+          prev.filter((msg) => msg.messageId !== deletedMessageId)
+        );
       });
 
       await connection.start();
       await connection.invoke('JoinRoom', room.id);
       hubConnectionRef.current = connection;
       setHubConnected(true);
-      console.log('Joined room and connected to group:', room.id);
+
+      // fetch existing messages
       fetchMessages(room.id);
     } catch (error) {
       console.error('Error joining room:', error);
     }
   };
 
+  // 4. Leave room
   const leaveRoom = async () => {
     if (!currentRoom) return;
     try {
       await API.delete('/chatRooms/leave', {
-        data: { chatRoomId: currentRoom.id, userName: joinUser || 'Anonymous' },
+        data: { chatRoomId: currentRoom.id },
       });
       if (hubConnectionRef.current) {
         await hubConnectionRef.current.invoke('LeaveRoom', currentRoom.id);
@@ -89,17 +94,16 @@ const ChatPage = () => {
       setCurrentRoom(null);
       setMessages([]);
       setHubConnected(false);
-      console.log('Left room.');
     } catch (error) {
       console.error('Error leaving room:', error);
     }
   };
 
+  // 5. Send message
   const handleSendMessage = async () => {
-    if (!currentRoom || !hubConnected) return;
+    if (!currentRoom || !hubConnected || !messageText.trim()) return;
     try {
       await hubConnectionRef.current.invoke('SendMessage', {
-        userName: joinUser || 'Anonymous',
         chatRoomId: currentRoom.id,
         message: messageText,
       });
@@ -109,11 +113,12 @@ const ChatPage = () => {
     }
   };
 
-  const handleEditMessage = async (id) => {
+  // 6. Edit message
+  const handleEditMessage = async (msgId) => {
     if (!currentRoom || !hubConnected) return;
     try {
       await hubConnectionRef.current.invoke('EditMessage', {
-        messageId: id,
+        messageId: msgId,
         chatRoomId: currentRoom.id,
         newContent: editText,
       });
@@ -124,13 +129,13 @@ const ChatPage = () => {
     }
   };
 
-  const handleDeleteMessage = async (id) => {
+  // 7. Delete message
+  const handleDeleteMessage = async (msgId) => {
     if (!currentRoom || !hubConnected) return;
     try {
-      // Include the chatRoomId along with the messageId
       await hubConnectionRef.current.invoke('DeleteMessage', {
-        messageId: id,
-        chatRoomId: currentRoom.id
+        messageId: msgId,
+        chatRoomId: currentRoom.id,
       });
     } catch (error) {
       console.error('Error deleting message:', error);
@@ -138,51 +143,74 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="container my-4">
-      <h2 className="text-center mb-4">Chat App</h2>
-      <div className="mb-3">
-        <label className="form-label">Your Name:</label>
-        <input
-          type="text"
-          value={joinUser}
-          onChange={(e) => setJoinUser(e.target.value)}
-          placeholder="Enter your name"
-          className="form-control"
-        />
-      </div>
-      {!currentRoom ? (
-        <ChatRoomList rooms={rooms} onJoin={joinRoom} />
-      ) : (
-        <div>
-          <div className="d-flex justify-content-between align-items-center bg-light p-3 rounded">
-            <h4 className="mb-0">Room: {currentRoom.name}</h4>
-            <button className="btn btn-danger" onClick={leaveRoom}>
-              Leave Room
-            </button>
-          </div>
-          <MessageList
-            messages={messages}
-            onEditInit={setEditingMessageId}
-            editingMessageId={editingMessageId}
-            editText={editText}
-            setEditText={setEditText}
-            onEditSave={handleEditMessage}
-            onDelete={handleDeleteMessage}
-          />
-          <div className="input-group mt-3">
-            <input
-              type="text"
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              placeholder="Type your message"
-              className="form-control"
-            />
-            <button className="btn btn-primary" onClick={handleSendMessage}>
-              Send
-            </button>
-          </div>
+    <div className="container-fluid vh-100 d-flex flex-column">
+      {/* Simple topbar */}
+      <div className="row bg-dark text-white align-items-center p-2">
+        <div className="col">
+          <h4 className="mb-0">My ChatApp</h4>
         </div>
-      )}
+        <div className="col-auto">
+          {currentRoom && (
+            <button className="btn btn-outline-light btn-sm" onClick={leaveRoom}>
+              Leave {currentRoom.name}
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="row flex-grow-1">
+        {/* Left column: rooms */}
+        <div className="col-3 bg-light p-0 border-end" style={{ overflowY: 'auto' }}>
+          <ChatRoomList rooms={rooms} onJoin={joinRoom} />
+        </div>
+
+        {/* Right column: messages */}
+        <div className="col-9 d-flex flex-column p-0">
+          {currentRoom ? (
+            <>
+              {/* Messages */}
+              <div className="flex-grow-1" style={{ overflowY: 'auto' }}>
+                <MessageList
+                  messages={messages}
+                  editingMessageId={editingMessageId}
+                  onEditInit={setEditingMessageId}
+                  editText={editText}
+                  setEditText={setEditText}
+                  onEditSave={handleEditMessage}
+                  onDelete={handleDeleteMessage}
+                />
+              </div>
+              {/* Message input */}
+              <div className="p-2 border-top">
+                <div className="input-group">
+                  <input
+                    className="form-control"
+                    type="text"
+                    placeholder="Type a message..."
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSendMessage();
+                      }
+                    }}
+                  />
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleSendMessage}
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="d-flex align-items-center justify-content-center h-100">
+              <h5 className="text-muted">Select a room to start chatting.</h5>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

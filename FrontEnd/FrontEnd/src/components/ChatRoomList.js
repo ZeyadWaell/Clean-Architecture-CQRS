@@ -1,26 +1,35 @@
 // src/components/ChatRoomList.js
 import React from 'react';
+import './ChatRoomList.css';
 
 const ChatRoomList = ({ rooms, onJoin }) => {
   return (
-    <div className="card shadow mb-4">
+    <div className="room-list-container card shadow h-100">
       <div className="card-header bg-primary text-white">
-        <h5 className="mb-0">Available Chat Rooms</h5>
+        <h5 className="mb-0">Chat Rooms</h5>
       </div>
-      <ul className="list-group list-group-flush">
+      <div className="card-body p-0">
         {rooms.length === 0 ? (
-          <li className="list-group-item">No chat rooms available.</li>
+          <div className="p-3 text-center text-muted">
+            No chat rooms available.
+          </div>
         ) : (
-          rooms.map((room) => (
-            <li key={room.id} className="list-group-item d-flex justify-content-between align-items-center">
-              <span>{room.name}</span>
-              <button className="btn btn-sm btn-outline-primary" onClick={() => onJoin(room)}>
-                Join
-              </button>
-            </li>
-          ))
+          <ul className="list-group list-group-flush">
+            {rooms.map((room) => (
+              <li
+                key={room.id}
+                className="list-group-item room-item d-flex justify-content-between align-items-center"
+                onClick={() => onJoin(room)}
+              >
+                <span className="fw-semibold">{room.name}</span>
+                <span className="text-muted small">
+                  Join
+                </span>
+              </li>
+            ))}
+          </ul>
         )}
-      </ul>
+      </div>
     </div>
   );
 };
