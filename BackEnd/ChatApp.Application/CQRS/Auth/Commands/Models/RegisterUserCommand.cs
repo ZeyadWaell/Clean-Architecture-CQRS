@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ChatApp.Application.CQRS.Auth.Commands.Models
 {
-    public class RegisterUserRequest : IRequest<ApiResponse<RegisterUserResponse>>
+    public class RegisterUserCommand : IRequest<ApiResponse<RegisterUserResponse>>
     {
         public string Email { get; set; }
         public string UserName { get; set; }

@@ -157,7 +157,7 @@ namespace ChatApp.Application.Services
 
 
 
-        public async Task<ApiResponse<List<ChatRoomAllResponse>>> GetAllRoomAsync(GetAllRoomsRequest request)
+        public async Task<ApiResponse<List<ChatRoomAllResponse>>> GetAllRoomAsync(GetAllRoomsQuery request)
         {
             var rooms = await _unitOfWork.ChatRoomRepository.GetAllAsync();
 

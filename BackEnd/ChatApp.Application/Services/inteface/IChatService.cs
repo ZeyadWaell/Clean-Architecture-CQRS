@@ -21,6 +21,6 @@ namespace ChatApp.Application.Services.inteface
         Task<ApiResponse<IList<ChatMessageResponse>>> GetChatRoomMessagesAsync(Guid chatRoomId);
         Task<string> JoinRoomAsync(JoinRoomRequest request);
         Task<ApiResponse<ChatRoomResponse>> LeaveRoomAsync(LeaveRoomRequest request);
-        Task<ApiResponse<List<ChatRoomAllResponse>>> GetAllRoomAsync(GetAllRoomsRequest request);
+        Task<ApiResponse<List<ChatRoomAllResponse>>> GetAllRoomAsync(GetAllRoomsQuery request);
     }
 }

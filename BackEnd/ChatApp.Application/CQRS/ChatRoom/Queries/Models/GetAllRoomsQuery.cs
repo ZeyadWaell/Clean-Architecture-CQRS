@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Application.CQRS.ChatRoom.Queries.Models
 {
-    public class GetAllRoomsRequest : IRequest<ApiResponse<List<ChatRoomAllResponse>>>, IBaseRequest
+    public class GetAllRoomsQuery : IRequest<ApiResponse<List<ChatRoomAllResponse>>>, IBaseRequest
     {
     }
-    public class GetAllRoomsRequestHandler : IRequestHandler<GetAllRoomsRequest, ApiResponse<List<ChatRoomAllResponse>>>
+    public class GetAllRoomsRequestHandler : IRequestHandler<GetAllRoomsQuery, ApiResponse<List<ChatRoomAllResponse>>>
     {
         private readonly IChatService _chatService;
 
@@ -22,7 +22,7 @@ namespace ChatApp.Application.CQRS.ChatRoom.Queries.Models
             _chatService = chatService;
         }
 
-        public async Task<ApiResponse<List<ChatRoomAllResponse>>> Handle(GetAllRoomsRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<ChatRoomAllResponse>>> Handle(GetAllRoomsQuery request, CancellationToken cancellationToken)
         {
             return await _chatService.GetAllRoomAsync(request);
         }

@@ -48,7 +48,7 @@ namespace ChatApp.Application.Services
             return ResponseHandler.Failure<LoginUserResponse>("Invalid login attempt.");
         }
 
-        public async Task<ApiResponse<RegisterUserResponse>> HandleRegister(RegisterUserRequest request)
+        public async Task<ApiResponse<RegisterUserResponse>> HandleRegister(RegisterUserCommand request)
         {
             var user = new ApplicationUser
             {

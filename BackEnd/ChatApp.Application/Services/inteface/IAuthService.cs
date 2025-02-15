@@ -13,7 +13,7 @@ namespace ChatApp.Application.Services.inteface
     public interface IAuthService
     {
        Task<ApiResponse<LoginUserResponse>> HandleLogin(LoginUserRequest request);
-       Task<ApiResponse<RegisterUserResponse>> HandleRegister(RegisterUserRequest request);
+       Task<ApiResponse<RegisterUserResponse>> HandleRegister(RegisterUserCommand request);
 
     }
 }

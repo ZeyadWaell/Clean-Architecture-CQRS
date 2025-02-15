@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Application.CQRS.Auth.Commands.Handlers
 {
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserRequest, ApiResponse<RegisterUserResponse>>
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ApiResponse<RegisterUserResponse>>
     {
         private readonly IAuthService _authServices;
 
@@ -22,7 +22,7 @@ namespace ChatApp.Application.CQRS.Auth.Commands.Handlers
         }
 
 
-        public async Task<ApiResponse<RegisterUserResponse>> Handle(RegisterUserRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<RegisterUserResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
            return await _authServices.HandleRegister(request);
         }

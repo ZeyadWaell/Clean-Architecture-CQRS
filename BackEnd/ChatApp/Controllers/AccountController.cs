@@ -29,7 +29,7 @@ namespace ChatApp.Api.Controllers
         }
 
         [HttpPost(AccountRoutes.Register)]
-        public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterUserCommand request)
         {
             var response = await _mediator.Send(request);
 

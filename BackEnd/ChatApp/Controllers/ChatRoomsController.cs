@@ -42,7 +42,7 @@ namespace ChatApp.Api.Controllers
         [HttpGet(ChatRoomsRoutes.GetAllRoom)]
         public async Task<IActionResult> GetAllRoom()
         {
-            var command = new GetAllRoomsRequest();
+            var command = new GetAllRoomsQuery();
             var response = await _mediator.Send(command);
             if (response.Success)
                 return Ok(response);
