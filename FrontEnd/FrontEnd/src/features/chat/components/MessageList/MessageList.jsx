@@ -1,5 +1,4 @@
-// src/features/chat/components/MessageList/MessageList.jsx
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './MessageList.module.css'
 
@@ -11,14 +10,20 @@ function MessageList({
   setEditText,
   onEditInit,
   onEditSave,
-  onDelete,
+  onDelete
 }) {
+  const containerRef = useRef(null)
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    }
+  }, [messages])
   return (
     <div className={`card ${styles.messageListContainer}`}>
       <div className={`card-header ${styles.cardHeader}`}>
         <h6>Messages</h6>
       </div>
-      <div className={styles.messagesBody}>
+      <div className={styles.messagesBody} ref={containerRef}>
         {messages.length === 0 ? (
           <div className={styles.noMessages}>No messages in this room.</div>
         ) : (
@@ -29,13 +34,7 @@ function MessageList({
               return (
                 <motion.div
                   key={msg.messageId}
-                  className={`${styles.messageBubble} ${
-                    isMine ? styles.mine : styles.theirs
-                  }`}
-                  /* 
-                    Animate in (fade/slide up) and out (fade/slide down).
-                    layout prop helps animate position changes smoothly.
-                  */
+                  className={`${styles.messageBubble} ${isMine ? styles.mine : styles.theirs}`}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}

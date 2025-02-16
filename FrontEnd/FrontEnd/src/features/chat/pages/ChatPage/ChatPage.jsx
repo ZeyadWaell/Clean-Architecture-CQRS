@@ -1,4 +1,3 @@
-// C:\Users\pc\source\repos\ChatApp\ProjectRoot\FrontEnd\FrontEnd\src\features\chat\pages\ChatPage\ChatPage.jsx
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../../../api/apiClient'
@@ -43,10 +42,13 @@ function ChatPage() {
       const token = localStorage.getItem('token')
       const { HubConnectionBuilder, LogLevel } = await import('@microsoft/signalr')
       const connection = new HubConnectionBuilder()
-        .withUrl(`${ApiConfig.MAIN_URL}${RoutesClass.CHATHUB}`, { accessTokenFactory: () => token })
+        .withUrl(`${ApiConfig.MAIN_URL}${RoutesClass.CHATHUB}`, {
+          accessTokenFactory: () => token
+        })
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
         .build()
+
       connection.on('ReceiveMessage', (msg) => {
         setMessages((prev) => [...prev, msg])
       })
@@ -59,15 +61,24 @@ function ChatPage() {
       connection.on('UserJoined', (userId) => {
         setMessages((prev) => [
           ...prev,
-          { messageId: `sys-${Date.now()}`, sender: 'System', message: `${userId} has joined the chat` }
+          {
+            messageId: `sys-${Date.now()}`,
+            sender: 'System',
+            message: `${userId} has joined the chat`
+          }
         ])
       })
       connection.on('UserLeft', (userId) => {
         setMessages((prev) => [
           ...prev,
-          { messageId: `sys-${Date.now()}`, sender: 'System', message: `${userId} left the chat` }
+          {
+            messageId: `sys-${Date.now()}`,
+            sender: 'System',
+            message: `${userId} left the chat`
+          }
         ])
       })
+
       await connection.start()
       await connection.invoke('JoinRoom', room.id)
       hubConnectionRef.current = connection

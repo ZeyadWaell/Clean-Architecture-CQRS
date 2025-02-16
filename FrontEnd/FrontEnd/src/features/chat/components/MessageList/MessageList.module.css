@@ -1,113 +1,70 @@
 .messageListContainer {
-    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
-  
-  .cardHeader {
-    background-color: #6c757d;
-    color: #fff;
-    padding: 0.75rem 1rem;
+  .card-header {
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
   }
-  
   .messagesBody {
     flex: 1;
     overflow-y: auto;
-    background-color: #f7f7f7;
-    padding: 1rem;
+    padding: 10px;
+    padding-bottom: 70px; /* extra space for the input bar */
   }
-  
-  /* Message bubble styling */
-  .messageBubble {
-    max-width: 70%;
-    margin-bottom: 1rem;
-    padding: 0.6rem 0.8rem;
-    border-radius: 1rem;
-    clear: both;
-    word-wrap: break-word;
-  }
-  
-  /* Current user’s messages (right) */
-  .mine {
-    float: right;
-    background-color: #007bff;
-    color: #fff;
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0;
-  }
-  
-  /* Other user’s messages (left) */
-  .theirs {
-    float: left;
-    background-color: #e5e5ea;
-    color: #333;
-    border-top-left-radius: 0.3rem;
-    border-bottom-left-radius: 0;
-  }
-  
-  /* Sender name (for messages from others) */
-  .senderName {
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-    color: #555;
-  }
-  
-  /* Actual message text */
-  .messageText {
-    white-space: pre-wrap;
-  }
-  
-  /* Editing container */
-  .editContainer {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .editActions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0.5rem;
-  }
-  
-  .editActions button {
-    margin-left: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border: none;
-    background-color: #28a745;
-    color: #fff;
-    border-radius: 0.2rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  .editActions button:hover {
-    background-color: #218838;
-  }
-  
-  /* Actions (edit/delete) below your own messages */
-  .messageActions {
-    text-align: right;
-    margin-top: 0.5rem;
-  }
-  
-  .messageActions button {
-    margin-left: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border: none;
-    background-color: #ffc107;
-    color: #333;
-    border-radius: 0.2rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  .messageActions button:hover {
-    background-color: #e0a800;
-  }
-  
-  /* When no messages are present */
   .noMessages {
     text-align: center;
-    color: #777;
+    color: #888;
+  }
+  .messageBubble {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 60%;
+    word-wrap: break-word;
+  }
+  .mine {
+    align-self: flex-end;
+    background-color: #d1e7dd;
+  }
+  .theirs {
+    align-self: flex-start;
+    background-color: #ffffff;
+  }
+  .senderName {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .messageText {
+    font-size: 1rem;
+  }
+  .messageActions {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    display: flex;
+    gap: 10px;
+  }
+  .editContainer input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  .editActions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .editActions button {
+    padding: 6px 12px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
   }
   

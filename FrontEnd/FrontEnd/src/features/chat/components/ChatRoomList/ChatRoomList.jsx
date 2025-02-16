@@ -1,6 +1,6 @@
 // src/features/chat/components/ChatRoomList/ChatRoomList.jsx
 import React from 'react'
-import styles from './ChatRoomList.module.css' // CSS Module
+import styles from './ChatRoomList.module.css'
 
 function ChatRoomList({ rooms, onJoin }) {
   return (
