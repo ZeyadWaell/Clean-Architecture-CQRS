@@ -1,10 +1,12 @@
-// src/features/chat/pages/ChatPage/ChatPage.jsx
+// C:\Users\pc\source\repos\ChatApp\ProjectRoot\FrontEnd\FrontEnd\src\features\chat\pages\ChatPage\ChatPage.jsx
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../../../api/apiClient'
 import ChatRoomList from '../../components/ChatRoomList/ChatRoomList'
 import MessageList from '../../components/MessageList/MessageList'
 import styles from './ChatPage.module.css'
+import RoutesClass from '../../../../config/RoutesClass'
+import ApiConfig from '../../../../config/ApiConfig'
 
 function ChatPage() {
   const [rooms, setRooms] = useState([])
@@ -21,22 +23,18 @@ function ChatPage() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const { data } = await apiClient.get('/chatRooms/getall')
+        const { data } = await apiClient.get(RoutesClass.GET_ALL_CHATROOMS)
         setRooms(data.data || [])
-      } catch (error) {
-        // handle error
-      }
+      } catch (error) {}
     }
     fetchRooms()
   }, [])
 
   const fetchMessages = async (roomId) => {
     try {
-      const { data } = await apiClient.get(`/chat/messages/${roomId}`)
+      const { data } = await apiClient.get(`${RoutesClass.MESSAGES}/${roomId}`)
       setMessages(data.data || [])
-    } catch (error) {
-      // handle error
-    }
+    } catch (error) {}
   }
 
   const joinRoom = async (room) => {
@@ -45,18 +43,15 @@ function ChatPage() {
       const token = localStorage.getItem('token')
       const { HubConnectionBuilder, LogLevel } = await import('@microsoft/signalr')
       const connection = new HubConnectionBuilder()
-        .withUrl('https://localhost:44307/chathub', { accessTokenFactory: () => token })
+        .withUrl(`${ApiConfig.MAIN_URL}${RoutesClass.CHATHUB}`, { accessTokenFactory: () => token })
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
         .build()
-
       connection.on('ReceiveMessage', (msg) => {
         setMessages((prev) => [...prev, msg])
       })
       connection.on('MessageEdited', (edited) => {
-        setMessages((prev) =>
-          prev.map((m) => (m.messageId === edited.messageId ? edited : m))
-        )
+        setMessages((prev) => prev.map((m) => (m.messageId === edited.messageId ? edited : m)))
       })
       connection.on('MessageDeleted', (delId) => {
         setMessages((prev) => prev.filter((m) => m.messageId !== delId))
@@ -64,32 +59,21 @@ function ChatPage() {
       connection.on('UserJoined', (userId) => {
         setMessages((prev) => [
           ...prev,
-          {
-            messageId: `sys-${Date.now()}`,
-            sender: 'System',
-            message: `${userId} has joined the chat`,
-          },
+          { messageId: `sys-${Date.now()}`, sender: 'System', message: `${userId} has joined the chat` }
         ])
       })
       connection.on('UserLeft', (userId) => {
         setMessages((prev) => [
           ...prev,
-          {
-            messageId: `sys-${Date.now()}`,
-            sender: 'System',
-            message: `${userId} left the chat`,
-          },
+          { messageId: `sys-${Date.now()}`, sender: 'System', message: `${userId} left the chat` }
         ])
       })
-
       await connection.start()
       await connection.invoke('JoinRoom', room.id)
       hubConnectionRef.current = connection
       setHubConnected(true)
       fetchMessages(room.id)
-    } catch (error) {
-      // handle error
-    }
+    } catch (error) {}
   }
 
   const leaveRoom = async () => {
@@ -100,10 +84,8 @@ function ChatPage() {
       setCurrentRoom(null)
       setMessages([])
       setHubConnected(false)
-      navigate('/chat')
-    } catch (error) {
-      // handle error
-    }
+      navigate(RoutesClass.CHAT)
+    } catch (error) {}
   }
 
   const handleSendMessage = async () => {
@@ -111,12 +93,10 @@ function ChatPage() {
     try {
       await hubConnectionRef.current.invoke('SendMessage', {
         chatRoomId: currentRoom.id,
-        message: messageText,
+        message: messageText
       })
       setMessageText('')
-    } catch (error) {
-      // handle error
-    }
+    } catch (error) {}
   }
 
   const handleEditMessage = async (id) => {
@@ -125,13 +105,11 @@ function ChatPage() {
       await hubConnectionRef.current.invoke('EditMessage', {
         messageId: id,
         chatRoomId: currentRoom.id,
-        newContent: editText,
+        newContent: editText
       })
       setEditingMessageId(null)
       setEditText('')
-    } catch (error) {
-      // handle error
-    }
+    } catch (error) {}
   }
 
   const handleDeleteMessage = async (id) => {
@@ -139,11 +117,9 @@ function ChatPage() {
     try {
       await hubConnectionRef.current.invoke('DeleteMessage', {
         messageId: id,
-        chatRoomId: currentRoom.id,
+        chatRoomId: currentRoom.id
       })
-    } catch (error) {
-      // handle error
-    }
+    } catch (error) {}
   }
 
   return (
