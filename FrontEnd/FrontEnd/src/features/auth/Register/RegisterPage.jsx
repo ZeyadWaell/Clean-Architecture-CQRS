@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import API from '../api/API'
+import apiClient from '../../../api/apiClient'
+
+import styles from './RegisterPage.module.css'
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -19,7 +21,7 @@ function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await API.post('/account/register', formData)
+      await apiClient.post('/account/register', formData)
       navigate('/login')
     } catch {
       setError('Registration failed. Please try again.')
@@ -27,57 +29,53 @@ function RegisterPage() {
   }
 
   return (
-    <div className="container d-flex align-items-center justify-content-center vh-100">
-      <div className="card p-4 shadow" style={{ maxWidth: '400px', width: '100%' }}>
-        <h2 className="text-center mb-4">Register</h2>
-        {error && <div className="alert alert-danger">{error}</div>}
+    <div className={styles.registerPage}>
+      <div className={styles.formCard}>
+        <h2 className={styles.title}>Register</h2>
+        {error && <div className={styles.error}>{error}</div>}
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Email</label>
+          <div className={styles.field}>
+            <label>Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="form-control"
               required
             />
           </div>
-          <div className="mb-3">
-            <label className="form-label">User Name</label>
+          <div className={styles.field}>
+            <label>User Name</label>
             <input
               type="text"
               name="userName"
               value={formData.userName}
               onChange={handleChange}
-              className="form-control"
               required
             />
           </div>
-          <div className="mb-3">
-            <label className="form-label">Password</label>
+          <div className={styles.field}>
+            <label>Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="form-control"
               required
             />
           </div>
-          <div className="mb-3">
-            <label className="form-label">Nick Name</label>
+          <div className={styles.field}>
+            <label>Nick Name</label>
             <input
               type="text"
               name="nikName"
               value={formData.nikName}
               onChange={handleChange}
-              className="form-control"
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Register</button>
+          <button type="submit" className={styles.submitButton}>Register</button>
         </form>
-        <p className="mt-3 text-center">
+        <p className={styles.switch}>
           Already have an account? <a href="/login">Login here</a>
         </p>
       </div>

@@ -1,7 +1,10 @@
-export default class RoutesClass {
-    static LOGIN = '/login'
-    static REGISTER = '/register'
-    static CHAT = '/chat'
-    static NOT_FOUND = '*'
+
+const RoutesClass = {
+    LOGIN: '/login',
+    REGISTER: '/register',
+    CHAT: '/chat',
+    NOT_FOUND: '*'
   }
+  
+  export default RoutesClass
   
