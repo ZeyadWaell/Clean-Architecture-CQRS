@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ChatApp.Application.CQRS.Requests.Chat.Handlers
 {
-    public class DeleteMessageRequestHandler : IRequestHandler<DeleteMessageRequest, ApiResponse<DeleteMessageResponse>>
+    public class DeleteMessageRequestHandler : IRequestHandler<DeleteMessageCommand, ApiResponse<DeleteMessageResponse>>
     {
         private readonly IChatService _chatService;
 
@@ -16,7 +16,7 @@ namespace ChatApp.Application.CQRS.Requests.Chat.Handlers
         }
 
 
-        public async Task<ApiResponse<DeleteMessageResponse>> Handle(DeleteMessageRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<DeleteMessageResponse>> Handle(DeleteMessageCommand request, CancellationToken cancellationToken)
         {
             return await _chatService.DeleteMessageAsync(request);
         }

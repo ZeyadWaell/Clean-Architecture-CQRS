@@ -22,7 +22,7 @@ namespace ChatApp.Api.Hubs
             _mediator = mediator;
             _logger = logger;
         }
-        public Task SendMessage(SendMessageRequest command)
+        public Task SendMessage(SendMessageCommand command)
         {
             var userName = Context.UserIdentifier;
             var broadcastMessage = new ChatMessageResponse
@@ -38,7 +38,7 @@ namespace ChatApp.Api.Hubs
             return Task.CompletedTask;
         }
  
-        public Task EditMessage(EditMessageRequest command)
+        public Task EditMessage(EditMessageCommand command)
         {
             var broadcastMessage = new ChatMessageResponse
             {
@@ -55,7 +55,7 @@ namespace ChatApp.Api.Hubs
 
 
 
-        public Task DeleteMessage(DeleteMessageRequest command)
+        public Task DeleteMessage(DeleteMessageCommand command)
         {
             _ = Clients.Group(command.ChatRoomId.ToString())
                 .SendAsync("MessageDeleted", command.MessageId);
@@ -97,7 +97,7 @@ namespace ChatApp.Api.Hubs
 
 
         #region Private helper
-        private async Task ProcessSendMessageAsync(SendMessageRequest command)
+        private async Task ProcessSendMessageAsync(SendMessageCommand command)
         {
             try { await _mediator.Send(command); }
             catch (Exception ex)
@@ -105,7 +105,7 @@ namespace ChatApp.Api.Hubs
                 _logger.LogError(ex, "Error processing SendMessage for ChatRoomId: {ChatRoomId}", command.ChatRoomId);
             }
         }
-        private async Task ProcessEditMessageAsync(EditMessageRequest command)
+        private async Task ProcessEditMessageAsync(EditMessageCommand command)
         {
             try { await _mediator.Send(command); }
             catch (Exception ex)
@@ -113,7 +113,7 @@ namespace ChatApp.Api.Hubs
                 _logger.LogError(ex, "Error processing SendMessage for ChatRoomId: {ChatRoomId}", command.ChatRoomId);
             }
         }
-        private async Task ProcessDeleteMessageAsync(DeleteMessageRequest command)
+        private async Task ProcessDeleteMessageAsync(DeleteMessageCommand command)
         {
             try
             {

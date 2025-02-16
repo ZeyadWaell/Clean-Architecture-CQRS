@@ -7,7 +7,7 @@ using MediatR;
 
 namespace ChatApp.Application.CQRS.Requests.Chat.Handlers
 {
-    public class EditMessageRequestHandler : IRequestHandler<EditMessageRequest, ApiResponse<EditMessageResponse>>
+    public class EditMessageRequestHandler : IRequestHandler<EditMessageCommand, ApiResponse<EditMessageResponse>>
     {
         private readonly IChatService _chatService;
 
@@ -18,7 +18,7 @@ namespace ChatApp.Application.CQRS.Requests.Chat.Handlers
 
 
 
-        public async Task<ApiResponse<EditMessageResponse>> Handle(EditMessageRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<EditMessageResponse>> Handle(EditMessageCommand request, CancellationToken cancellationToken)
         {
            return await _chatService.EditMessageAsync(request);
         }

@@ -29,7 +29,7 @@ namespace ChatApp.Application.Services
 
 
 
-        public async Task<ApiResponse<ChatMessageResponse>> SendMessageAsync(SendMessageRequest request)
+        public async Task<ApiResponse<ChatMessageResponse>> SendMessageAsync(SendMessageCommand request)
         {
             var message = new ChatMessage
             {
@@ -53,7 +53,7 @@ namespace ChatApp.Application.Services
             }, "Message sent successfully.");
         }
 
-        public async Task<ApiResponse<EditMessageResponse>> EditMessageAsync(EditMessageRequest request)
+        public async Task<ApiResponse<EditMessageResponse>> EditMessageAsync(EditMessageCommand request)
         {
             var message = await _unitOfWork.ChatMessageRepository.GetAsync(c=>c.Id == request.MessageId);
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -76,7 +76,7 @@ namespace ChatApp.Application.Services
             }, "Message edited successfully.");
         }
 
-        public async Task<ApiResponse<DeleteMessageResponse>> DeleteMessageAsync(DeleteMessageRequest request)
+        public async Task<ApiResponse<DeleteMessageResponse>> DeleteMessageAsync(DeleteMessageCommand request)
         {
             var message = await _unitOfWork.ChatMessageRepository.GetAsync(c=>c.Id ==request.MessageId);
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
