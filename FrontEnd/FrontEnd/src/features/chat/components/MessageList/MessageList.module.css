@@ -1,23 +1,24 @@
-.message-list-container {
+.messageListContainer {
     height: 100%;
     display: flex;
     flex-direction: column;
   }
   
-  .card-header {
+  .cardHeader {
     background-color: #6c757d;
     color: #fff;
     padding: 0.75rem 1rem;
   }
   
-  .messages-body {
+  .messagesBody {
     flex: 1;
     overflow-y: auto;
     background-color: #f7f7f7;
     padding: 1rem;
   }
   
-  .message-bubble {
+  /* Message bubble styling */
+  .messageBubble {
     max-width: 70%;
     margin-bottom: 1rem;
     padding: 0.6rem 0.8rem;
@@ -26,6 +27,7 @@
     word-wrap: break-word;
   }
   
+  /* Current user’s messages (right) */
   .mine {
     float: right;
     background-color: #007bff;
@@ -34,6 +36,7 @@
     border-bottom-right-radius: 0;
   }
   
+  /* Other user’s messages (left) */
   .theirs {
     float: left;
     background-color: #e5e5ea;
@@ -42,28 +45,31 @@
     border-bottom-left-radius: 0;
   }
   
-  .sender-name {
+  /* Sender name (for messages from others) */
+  .senderName {
     font-size: 0.8rem;
     margin-bottom: 0.2rem;
     color: #555;
   }
   
-  .message-text {
+  /* Actual message text */
+  .messageText {
     white-space: pre-wrap;
   }
   
-  .edit-container {
+  /* Editing container */
+  .editContainer {
     display: flex;
     flex-direction: column;
   }
   
-  .edit-actions {
+  .editActions {
     display: flex;
     justify-content: flex-end;
     margin-top: 0.5rem;
   }
   
-  .edit-actions button {
+  .editActions button {
     margin-left: 0.5rem;
     padding: 0.25rem 0.5rem;
     border: none;
@@ -71,19 +77,20 @@
     color: #fff;
     border-radius: 0.2rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease-in-out;
   }
   
-  .edit-actions button:hover {
+  .editActions button:hover {
     background-color: #218838;
   }
   
-  .message-actions {
+  /* Actions (edit/delete) below your own messages */
+  .messageActions {
     text-align: right;
     margin-top: 0.5rem;
   }
   
-  .message-actions button {
+  .messageActions button {
     margin-left: 0.5rem;
     padding: 0.25rem 0.5rem;
     border: none;
@@ -91,14 +98,15 @@
     color: #333;
     border-radius: 0.2rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease-in-out;
   }
   
-  .message-actions button:hover {
+  .messageActions button:hover {
     background-color: #e0a800;
   }
   
-  .no-messages {
+  /* When no messages are present */
+  .noMessages {
     text-align: center;
     color: #777;
   }

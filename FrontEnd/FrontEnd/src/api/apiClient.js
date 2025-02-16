@@ -1,11 +1,11 @@
 import axios from 'axios'
 import ApiConfig from '../config/ApiConfig'
 
-const API = axios.create({
+const apiClient = axios.create({
   baseURL: ApiConfig.BASE_URL,
 })
 
-API.interceptors.request.use(
+apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
     if (token) {
@@ -16,7 +16,7 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-API.interceptors.response.use(
+apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && [401, 403].includes(error.response.status)) {
@@ -27,4 +27,4 @@ API.interceptors.response.use(
   }
 )
 
-export default API
+export default apiClient

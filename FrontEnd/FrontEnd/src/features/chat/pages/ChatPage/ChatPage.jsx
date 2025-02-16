@@ -1,9 +1,10 @@
+// src/features/chat/pages/ChatPage/ChatPage.jsx
 import React, { useState, useEffect, useRef } from 'react'
-import API from '../api/API'
-import ChatRoomList from '../components/ChatRoomList'
-import MessageList from '../components/MessageList'
 import { useNavigate } from 'react-router-dom'
-import './ChatPage.css'
+import apiClient from '../../../../api/apiClient'
+import ChatRoomList from '../../components/ChatRoomList/ChatRoomList'
+import MessageList from '../../components/MessageList/MessageList'
+import styles from './ChatPage.module.css'
 
 function ChatPage() {
   const [rooms, setRooms] = useState([])
@@ -20,18 +21,22 @@ function ChatPage() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const { data } = await API.get('/chatRooms/getall')
+        const { data } = await apiClient.get('/chatRooms/getall')
         setRooms(data.data || [])
-      } catch (error) {}
+      } catch (error) {
+        // handle error
+      }
     }
     fetchRooms()
   }, [])
 
   const fetchMessages = async (roomId) => {
     try {
-      const { data } = await API.get(`/chat/messages/${roomId}`)
+      const { data } = await apiClient.get(`/chat/messages/${roomId}`)
       setMessages(data.data || [])
-    } catch (error) {}
+    } catch (error) {
+      // handle error
+    }
   }
 
   const joinRoom = async (room) => {
@@ -62,8 +67,8 @@ function ChatPage() {
           {
             messageId: `sys-${Date.now()}`,
             sender: 'System',
-            message: `${userId} has joined the chat`
-          }
+            message: `${userId} has joined the chat`,
+          },
         ])
       })
       connection.on('UserLeft', (userId) => {
@@ -72,8 +77,8 @@ function ChatPage() {
           {
             messageId: `sys-${Date.now()}`,
             sender: 'System',
-            message: `${userId} left the chat`
-          }
+            message: `${userId} left the chat`,
+          },
         ])
       })
 
@@ -82,21 +87,23 @@ function ChatPage() {
       hubConnectionRef.current = connection
       setHubConnected(true)
       fetchMessages(room.id)
-    } catch (error) {}
+    } catch (error) {
+      // handle error
+    }
   }
 
   const leaveRoom = async () => {
     if (!currentRoom) return
     try {
-
-        await hubConnectionRef.current.invoke('LeaveRoom', currentRoom.id)
-        await hubConnectionRef.current.stop()
-      
+      await hubConnectionRef.current.invoke('LeaveRoom', currentRoom.id)
+      await hubConnectionRef.current.stop()
       setCurrentRoom(null)
       setMessages([])
       setHubConnected(false)
       navigate('/chat')
-    } catch (error) {}
+    } catch (error) {
+      // handle error
+    }
   }
 
   const handleSendMessage = async () => {
@@ -104,10 +111,12 @@ function ChatPage() {
     try {
       await hubConnectionRef.current.invoke('SendMessage', {
         chatRoomId: currentRoom.id,
-        message: messageText
+        message: messageText,
       })
       setMessageText('')
-    } catch (error) {}
+    } catch (error) {
+      // handle error
+    }
   }
 
   const handleEditMessage = async (id) => {
@@ -116,11 +125,13 @@ function ChatPage() {
       await hubConnectionRef.current.invoke('EditMessage', {
         messageId: id,
         chatRoomId: currentRoom.id,
-        newContent: editText
+        newContent: editText,
       })
       setEditingMessageId(null)
       setEditText('')
-    } catch (error) {}
+    } catch (error) {
+      // handle error
+    }
   }
 
   const handleDeleteMessage = async (id) => {
@@ -128,26 +139,28 @@ function ChatPage() {
     try {
       await hubConnectionRef.current.invoke('DeleteMessage', {
         messageId: id,
-        chatRoomId: currentRoom.id
+        chatRoomId: currentRoom.id,
       })
-    } catch (error) {}
+    } catch (error) {
+      // handle error
+    }
   }
 
   return (
-    <div className="chat-page">
-      <div className="header">
+    <div className={styles.chatPage}>
+      <div className={styles.header}>
         <h5>My Chat App</h5>
         {currentRoom && (
-          <button className="leave-btn" onClick={leaveRoom}>
+          <button className={styles.leaveBtn} onClick={leaveRoom}>
             Leave {currentRoom.name}
           </button>
         )}
       </div>
-      <div className="main-content">
-        <div className="room-list">
+      <div className={styles.mainContent}>
+        <div className={styles.roomList}>
           <ChatRoomList rooms={rooms} onJoin={joinRoom} />
         </div>
-        <div className="chat-container">
+        <div className={styles.chatContainer}>
           {currentRoom ? (
             <>
               <MessageList
@@ -160,13 +173,13 @@ function ChatPage() {
                 onEditSave={handleEditMessage}
                 onDelete={handleDeleteMessage}
               />
-              <div className="message-input">
+              <div className={styles.messageInput}>
                 <input
                   type="text"
                   placeholder="Type a message..."
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
-                  onKeyPress={(e) => {
+                  onKeyDown={(e) => {
                     if (e.key === 'Enter') handleSendMessage()
                   }}
                 />
@@ -174,7 +187,7 @@ function ChatPage() {
               </div>
             </>
           ) : (
-            <div className="no-room">
+            <div className={styles.noRoom}>
               <h5>Select a room to start chatting.</h5>
             </div>
           )}

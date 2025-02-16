@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ChatApp.Application.CQRS.Requests.Chat.Models
 {
-    public class DeleteMessageRequest : IRequest<ApiResponse<DeleteMessageResponse>>
+    public class DeleteMessageCommand : IRequest<ApiResponse<DeleteMessageResponse>>
     {
         public Guid MessageId { get; set; }
         public Guid ChatRoomId { get; set; }

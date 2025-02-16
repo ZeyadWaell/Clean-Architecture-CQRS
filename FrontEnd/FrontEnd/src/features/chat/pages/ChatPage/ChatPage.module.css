@@ -1,4 +1,4 @@
-.chat-page {
+.chatPage {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -14,46 +14,49 @@
     align-items: center;
   }
   
-  .leave-btn {
+  .leaveBtn {
     background: transparent;
     border: 1px solid #fff;
     color: #fff;
     padding: 0.375rem 0.75rem;
     border-radius: 0.25rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease-in-out;
   }
   
-  .leave-btn:hover {
+  .leaveBtn:hover {
     background-color: #fff;
     color: #343a40;
   }
   
-  .main-content {
+  .mainContent {
     flex: 1;
     display: flex;
     overflow: hidden;
   }
   
-  .room-list {
+  /* Left sidebar with rooms */
+  .roomList {
     width: 25%;
     border-right: 1px solid #ddd;
     overflow-y: auto;
   }
   
-  .chat-container {
+  /* Right side chat container */
+  .chatContainer {
     flex: 1;
     display: flex;
     flex-direction: column;
   }
   
-  .message-input {
+  /* Input area at the bottom of the chat container */
+  .messageInput {
     display: flex;
     padding: 0.75rem;
     border-top: 1px solid #ddd;
   }
   
-  .message-input input {
+  .messageInput input {
     flex: 1;
     padding: 0.5rem;
     border: 1px solid #ddd;
@@ -61,21 +64,22 @@
     margin-right: 0.5rem;
   }
   
-  .message-input button {
+  .messageInput button {
     padding: 0.5rem 1rem;
     border: none;
     background-color: #007bff;
     color: #fff;
     border-radius: 0.25rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease-in-out;
   }
   
-  .message-input button:hover {
+  .messageInput button:hover {
     background-color: #0056b3;
   }
   
-  .no-room {
+  /* Placeholder text when no room is selected */
+  .noRoom {
     flex: 1;
     display: flex;
     justify-content: center;

@@ -12,7 +12,7 @@ using System;
 
 namespace ChatApp.Application.CQRS.Requests.Chat.Handlers
 {
-    public class SendMessageRequestHandler : IRequestHandler<SendMessageRequest, ApiResponse<ChatMessageResponse>>
+    public class SendMessageRequestHandler : IRequestHandler<SendMessageCommand, ApiResponse<ChatMessageResponse>>
     {
         private readonly IChatService _chatService;
 
@@ -22,7 +22,7 @@ namespace ChatApp.Application.CQRS.Requests.Chat.Handlers
         }
 
 
-        public async Task<ApiResponse<ChatMessageResponse>> Handle(SendMessageRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<ChatMessageResponse>> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
            return await _chatService.SendMessageAsync(request);
         }

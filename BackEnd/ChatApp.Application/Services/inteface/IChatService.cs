@@ -15,9 +15,9 @@ namespace ChatApp.Application.Services.inteface
 {
     public interface IChatService
     {
-        Task<ApiResponse<ChatMessageResponse>> SendMessageAsync(SendMessageRequest request);
-        Task<ApiResponse<EditMessageResponse>> EditMessageAsync(EditMessageRequest request);
-        Task<ApiResponse<DeleteMessageResponse>> DeleteMessageAsync(DeleteMessageRequest request);
+        Task<ApiResponse<ChatMessageResponse>> SendMessageAsync(SendMessageCommand request);
+        Task<ApiResponse<EditMessageResponse>> EditMessageAsync(EditMessageCommand request);
+        Task<ApiResponse<DeleteMessageResponse>> DeleteMessageAsync(DeleteMessageCommand request);
         Task<ApiResponse<IList<ChatMessageResponse>>> GetChatRoomMessagesAsync(Guid chatRoomId);
         Task<string> JoinRoomAsync(JoinRoomRequest request);
         Task<ApiResponse<ChatRoomResponse>> LeaveRoomAsync(LeaveRoomRequest request);
